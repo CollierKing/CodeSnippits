@@ -1,0 +1,3 @@
+SELECT cd.AccountID, Count(cd.ContractID)
+FROM (select distinct ContractID, AccountID from Combined1) as cd
+GROUP BY cd.AccountID

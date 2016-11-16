@@ -1,0 +1,9 @@
+SELECT distinct(contracts.contractID), contracts.accountid, contracts.contracttermstart, contracts.contracttermend
+FROM contracts,
+(
+  SELECT accountid, contractID, contracttermstart, contracttermend  
+  FROM contracts
+  where to_date(ContractTermEnd, 'mm/dd/yyyy') - sysdate < '7'
+) subquery1
+WHERE subquery1.accountid=contracts.accountid
+;

@@ -1,0 +1,8 @@
+SELECT customer.accountid, subquery1.total_amount, subquery1.total_cons
+FROM customer,
+  (SELECT accountid, sum(contracts.usagesincestart) as total_amount,
+  count(contracts.contractid) as total_cons
+  FROM contracts
+  GROUP BY accountid) subquery1
+WHERE subquery1.accountid=customer.accountid
+order by 3 desc;  
