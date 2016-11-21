@@ -810,7 +810,23 @@ cran %>%
   arrange(desc(size_mb)) %>%
         print
 
-##SUMIFs example
+##SUMIFs examples
+#Aggregate
+
+#where i s the criteria and Rating is the aggregation field
+
+avgRating <- aggregate(as.formula(paste0("Rating~",i)),clubtbl,mean)
+attrSumm$avgRating <- avgRating[avgRating[i]==1,][2]
+
+attrCount <- aggregate(as.formula(paste0("Rating~",i)),clubtbl,length)
+attrSumm$attrCount <- attrCount[attrCount[i]==1,][2]
+
+
+
+
+
+
+#dplyr
 library(dplyr)
 
 names <- c("a", "b", "c", "d", "a", "b", "c", "d")
