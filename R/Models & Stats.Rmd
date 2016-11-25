@@ -1,0 +1,95 @@
+---
+title: "Models & Stats"
+output: html_notebook
+---
+
+## Statistical Testing
+
+### Prop Tests (of unequal proportions)
+```{r prop tests}
+#Prop Test of Significance @ 99% Confidence
+# of successes / # of attempts
+ptestresult <- prop.test(c(allSummtbl$club_attrCount[j],allSummtbl$lounge_attrCount[j]),c(nrow(clubtbl),nrow(loungetbl)),correct = FALSE,conf.level=0.99)
+
+
+
+```
+
+### T-Tests (2 sided)
+```{r t tests}
+
+#Reverse (using summary stats without actual data vectors)
+
+#plug in: mean, sd, n
+
+ttestresult <- tsum.test(mean.x=allSummtbl$club_avgRating[j],   s.x=allSummtbl$club_sdRating[j], n.x=allSummtbl$club_attrCount[j],
+          mean.y=allSummtbl$lounge_avgRating[j], s.y=allSummtbl$lounge_sdRating[j], n.y=allSummtbl$lounge_attrCount[j])
+
+```
+
+
+
+## PCA & Factor Analysis
+
+```{r pca & FA}
+
+##Example 1 - Factor Analysis & PCA
+#Data: Employee Satisfaction Survey
+
+setwd("C:/Users/Collier/Dropbox/Skills/R/Data")
+
+#Import Data
+emp_factor <- read.csv("Employee-Factor.csv")
+names(emp_factor)
+#Use PCA to find number of factors
+
+# ?princomp
+
+pca <- princomp(emp_factor)
+
+summary(pca)
+
+plot(pca, type="lines")
+
+biplot(pca,cex=c(0.75,1))
+
+biplot(pca,scale.=TRUE,cex=c(0.5,0.75))
+
+#Run exploratory factor analysis to find number of drivers
+
+fact <- factanal(emp_factor,2,rotation="varimax")
+
+fact
+
+library(lattice)
+
+biplot.factanal <- function (fa.fit,...)
+{
+        # Get the first two columns of scores, i.e.,
+        # scores on first two factors
+        x = fa.fit$scores[,1:2]
+        # Get the loadings on the first two factors
+        y = fa.fit$loadings[,1:2]
+        biplot(x,y,...)
+}
+
+
+biplot.factanal(factanal(emp_factor,factors=2,scores="regression"),
+                cex=c(0.5,0.8))
+
+
+#Compute scores for each driver
+
+
+fact.final <- factanal(emp_factor, 
+                       5,
+                       rotation="varimax",
+                       score="regression")
+
+
+#the factor score values
+
+head(fact.final$scores)
+
+
+```

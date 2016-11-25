@@ -21,6 +21,15 @@ With Sheets("test")
     lastrow = .Cells(.rows.count, "C").End(xlUp).row
 End With
 
+'Set LastCol
+With ActiveSheet
+     lastcol = ActiveSheet.UsedRange.Columns.count
+End With
+
+'Select sheet's entire range
+'Select Activesheet Range
+Set rng = Range(Cells(1, 1), Cells(lastrow, lastcol))
+
 'fillDown cells
 fr = ActiveCell.row
 cl = ActiveCell.Column

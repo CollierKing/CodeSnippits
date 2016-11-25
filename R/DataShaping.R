@@ -290,6 +290,8 @@ y %*% x
 
 #Match 
 dataframe2$planName <- planNames$Population[match(dataframe2$CURRENT_PLAN_NAME,planNames$Plan.Name)]
+# Vlookup equialent
+termDB_6$Plan.Name <- plans$Population[match(termDB_6$CURRENT_PLAN_NAME,plans$Plan.Name)]
 
 # Apply a join to several data frames based on a key field
 mrg <- merge(d0,d1,by="state")

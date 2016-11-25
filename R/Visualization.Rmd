@@ -1,0 +1,66 @@
+---
+title: "Visualization"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##  GGPLOT
+
+### Forest Plot
+
+```{r ggplot}
+
+g1 <- ggplot(allX, aes(x=reorder(planName,count_all.y), y=count_all.y, ymin=count_all.x, ymax=count_all.y))+
+	geom_pointrange() + 
+        coord_flip() +
+      geom_text(position=position_dodge(1.0),aes(y=max+20000,label=sprintf("%1.0f%%",100*pct_chg),color=ifelse(pct_chg>.001,"dark green","red"))) +
+      scale_color_manual(values = c("green","red")) +
+      theme(legend.position="none") +
+      scale_y_continuous(labels=comma,breaks=seq(0,400000,by=50000)) +
+      ylab("") + xlab("") + ggtitle("")
+g1
+
+
+```
+
+### Bar Chart
+
+```{r ggplot bar chart}
+
+ggplot(data.export.campaign,aes(Campaign,Count, fill=Activity)) +
+                        geom_bar(stat="identity",position=position_dodge(),colour="black", lwd=0.5) +
+        xlab("") + ylab("") +
+        # scale_x_date(date_breaks = "1 month", date_labels = "%b %y") +
+        scale_y_continuous(labels = comma) +
+        theme(axis.text.x = element_text(angle = 45, hjust =1, size = 8)) +
+        theme(legend.position = "none") + ggtitle("")
+
+
+
+```
+
+
+
+
+## SHINY
+================================================================================
+
+
+## Data table Scrolling
+```{r shiny}
+
+
+renderDataTable({
+  selectedData()
+  
+},
+options = list( 
+      scrollY = '300px', paging = FALSE, scrollX = TRUE)
+) 
+
+
+
+```
