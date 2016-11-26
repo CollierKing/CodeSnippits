@@ -9,6 +9,12 @@ x <- 1304287 * 28 * 8
 x <- x/(2^20)
 
 
+## Changing Memory Specs
+memory.limit(size = 100000) 
+# https://www.linkedin.com/groups/77616/77616-6199852823635681281
+
+
+
 ## Reading in multiple objects in a loop
 files <- list.files(pattern="*.csv", full.names=TRUE)
 files <- as.data.frame(files)
