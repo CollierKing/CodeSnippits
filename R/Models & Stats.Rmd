@@ -188,6 +188,26 @@ predicted= predict(fit,x_test)
 
 ```
 
+### Naive Bays VS Linear Discriminant Analysis (LDA)
+
+```{r nb vs lda}
+
+library(caret)
+attach(iris)
+
+inTrain <- createDataPartition(y=iris$Species,p=0.7,list = FALSE)
+
+training <- iris[inTrain,]
+testing <- iris[-inTrain,]
+
+modlda <- train(Species~.,data=training,method="lda")
+modnb <- train(Species~.,data=training,method="nb")
+plda <- predict(modlda,testing)
+pnb <- predict(modnb,testing)
+
+table(plda,pnb)
+
+```
 # =============================================================
 # KNN (K-Nearest Neighbors)
 

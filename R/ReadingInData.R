@@ -250,6 +250,34 @@ if (!file.exists("UCI HAR Dataset")) {
   unzip(zipFile) 
 }
 
+#Downloading files from Dropbox Links
+library(curl)
+
+myurl <- "https://www.dropbox.com/s/xacl7xywm4elpz4/Employee-Factor.csv?dl=0"
+
+read.csv(myurl)
+
+
+#Downloading files from OneDrive Links
+#http://metadataconsulting.blogspot.com/2014/05/how-to-get-direct-download-link-from.html
+#1 - from onedrive embed feature
+#2 - extract hyperlink
+#3 - replace "embed" with "download"
+<iframe src="https://onedrive.live.com/embed?cid=2256E4548E02B6B1&resid=2256E4548E02B6B1%217398&authkey=AC2b0xJYaUAQpJE" width="98" height="120" frameborder="0" scrolling="no"></iframe>
+myurl <- "https://onedrive.live.com/download?cid=2256E4548E02B6B1&resid=2256E4548E02B6B1%217398&authkey=AC2b0xJYaUAQpJE"
+download.file(myurl,"testDL.rds")
+getwd()
+list.files()
+#Downloading files from Google Drive/Google Sheets
+
+
+#Downloading files from Github
+##right click "view raw" to copy link or add "raw=true" to end
+
+myurl <- "https://github.com/bquast/Data-Science-Capstone/blob/master/df_trigram.RData?raw=true"
+
+load(url(myurl))
+
 
 
 #Reading in JSON-------------------------------------

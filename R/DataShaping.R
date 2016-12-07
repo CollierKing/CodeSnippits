@@ -336,7 +336,7 @@ join_all(dfList)
 
 
 # LOOPING FUNCTIONS_____________________________________________________
-
+# http://stackoverflow.com/questions/3505701/r-grouping-functions-sapply-vs-lapply-vs-apply-vs-tapply-vs-by-vs-aggrega?rq=1
 # LAPPLY-------------------------
 # lapply always returns a list
 x <- list(a=1:5,b=rnorm(10))
@@ -718,7 +718,7 @@ ddply(InsectSprays,.(spray),summarize,sum=sum(count))
 # dim(spraySums)
 # head(spraySums)
 
-# DPLYR PACKAGE_________________________________________________________
+# DPLYR
 ##chicago data demo
 library(dplyr)
 chicago <- readRDS("C:\\Users\\Collier\\Dropbox (Personal)\\Skills\\R\\Intro to R\\data\\chicago.rds")
@@ -812,22 +812,6 @@ cran %>%
   arrange(desc(size_mb)) %>%
         print
 
-##SUMIFs examples
-#Aggregate
-
-#where i s the criteria and Rating is the aggregation field
-
-avgRating <- aggregate(as.formula(paste0("Rating~",i)),clubtbl,mean)
-attrSumm$avgRating <- avgRating[avgRating[i]==1,][2]
-
-attrCount <- aggregate(as.formula(paste0("Rating~",i)),clubtbl,length)
-attrSumm$attrCount <- attrCount[attrCount[i]==1,][2]
-
-
-
-
-
-
 #dplyr
 library(dplyr)
 
@@ -845,6 +829,55 @@ x <- total %>%
 # 2     c     6    14
 # 3     b     6    12
 # 4     a     6    10
+
+
+#Windowing functions with DPLYR
+
+# Cumulative sum by date range
+#your data frame 
+x <- structure(list(Customer_ID = c(1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3), date = structure(c(1L, 2L, 3L, 4L, 7L, 10L, 11L, 5L, 6L, 8L, 9L, 12L), .Label = c("01/01/2016", "02/01/2016", "02/15/2016", "02/28/2016", "04/01/2016", "04/20/2016", "05/01/2016", "05/05/2016", "06/01/2016", "07/01/2016", "07/15/2016", "10/01/2016"), class = "factor"), Amount = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), Transaction_Code = c(0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1)), .Names = c("Customer_ID", "date", "Amount", "Transaction_Code"), row.names = c(NA, -12L ), class = "data.frame")
+
+#changed date '2/30/2016' to '2/28/2016' to recognize as a real date
+x$date <- as.Date(x$date, format = "%m/%d/%Y")
+
+library(dplyr)
+
+x <- x %>% group_by(Customer_ID) %>%
+  #calculate difference between current row date and prev row date (in days)
+  mutate(date2 = as.numeric(difftime(date, lag(date,1)))) %>%
+  #convert NAs to 0 for start of each customer (needed for cumsum function)
+  mutate(date2 = ifelse(is.na(date2), 0, date2)) %>%
+  #convert cumsum of days into ranges of 30 & truncate to remove decimals
+  mutate(date3 = trunc((cumsum(date2))/30)) %>%
+  #re-group by customer and date range period
+  group_by(Customer_ID,date3) %>%
+  #calculate total Amount per range period
+  summarise(totAmt = sum(Amount))
+
+print(x)
+
+
+
+
+
+
+##SUMIFs examples
+#Aggregate
+
+#where i s the criteria and Rating is the aggregation field
+
+avgRating <- aggregate(as.formula(paste0("Rating~",i)),clubtbl,mean)
+attrSumm$avgRating <- avgRating[avgRating[i]==1,][2]
+
+attrCount <- aggregate(as.formula(paste0("Rating~",i)),clubtbl,length)
+attrSumm$attrCount <- attrCount[attrCount[i]==1,][2]
+
+
+
+
+
+
+
 
 totalStepsByDate <- activitiesByDate %>% summarise(totalSteps = sum(steps, na.rm = TRUE))
 # OR COULD DO
