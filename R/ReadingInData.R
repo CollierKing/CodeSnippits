@@ -13,9 +13,21 @@ x <- x/(2^20)
 memory.limit(size = 100000) 
 # https://www.linkedin.com/groups/77616/77616-6199852823635681281
 
+##Print object sizes in workspace
+for (thing in ls()) { message(thing); print(object.size(get(thing)), units='auto') }
+
+sort( sapply(ls(),function(x){object.size(get(x))})) 
+
+#Print object sizes in working directory
+# file.info(list.files(,pattern=".sh$"))
+x <- file.info(list.files())
 
 
-## Reading in multiple objects in a loop
+sort(lapply(paste0(rownames(x),"....",x$size/(2^20)),print))
+
+
+
+## Reading in multiple objects in a loop/lapply 
 files <- list.files(pattern="*.csv", full.names=TRUE)
 files <- as.data.frame(files)
 
@@ -25,6 +37,11 @@ for(i in 1:nrow(files)){
   assign(paste0("x",i),x)
   
 }
+
+files <- list.files(pattern="*.csv", full.names=TRUE)
+out <- do.call(rbind,lapply(files,read.csv,stringsAsFactors=FALSE))
+
+
 
 
 #copy data in from clipboard
@@ -44,14 +61,12 @@ write.excel <- function(x,row.names=FALSE,col.names=TRUE,...) {
 
 write.excel(dat)
 
-
-#lapply read csv
-files <- list.files(pattern="*.csv", full.names=TRUE)
-out <- do.call(rbind,lapply(files,read.csv,stringsAsFactors=FALSE))
+getwd()
 
 
 
-# Tabular Data-------------------------------------------------
+
+# TEXT FILES_______________________________________________________________
 read.csv()
 read.table() # Header=True, sep="," <Ex, stringsAsFactors=F/T --> code char vars as factors? (def: T)
 ?read.table
@@ -70,7 +85,6 @@ library(xlsx)
 # install.packages("rjava")
 library(rJava)
 cameraData <- read.xlsx("MSA_M2015_dl.xlsx",sheetIndex=1,header=TRUE) #generic read sheet
-
 #with rows/cols as Indexes--------------------------------
 colIndex <- 2:3
 rowIndex <- 1:4
@@ -88,17 +102,24 @@ data <- read.fwf(file = "https://d396qusza40orc.cloudfront.net/getdata%2Fwksst81
                  skip = 4,
                  widths = c(12, 7,4, 9,4, 9,4, 9,4))
 
-# Textual Formats_________________________________________________
-# ???
+##openxlsx package
+library(openxlsx)
 
+
+#R FILES_______________________________________________________________
 #Reading from other R Files_______________________________________
 source()
 dget #read in r code files
 load() #for reading in saved workspaces
 unserialize() #for reading single r objects in binary form
+readRDS # for RDS (R data source files)
+
+
+
+
 
 # DATABASES_________________________________________________
-#mySQl connect example--------------------------------------
+#RMYSQL
 install.packages("RMySQL")
 library(RMySQL)
 
@@ -131,7 +152,15 @@ dim(affyMisSmall)
 ##Remember to close the connection!!!
 dbDisconnect(hg19)
 
+#RODBC
+
+
+
+
+
+
 # READING DATA FROM APIs______________________________
+#TWITTER
 myapp = oauth_app("twitter",
                   key="yourConsumerKeyHere",secret="yourConsumerSecretHere")
 sig = sign_oauth1.0(myapp,
