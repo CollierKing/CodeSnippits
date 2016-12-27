@@ -303,10 +303,14 @@ list.files()
 #Downloading files from Github
 ##right click "view raw" to copy link or add "raw=true" to end
 
+# .Rdata files
 myurl <- "https://github.com/bquast/Data-Science-Capstone/blob/master/df_trigram.RData?raw=true"
-
 load(url(myurl))
 
+# CSV files
+library(RCurl)
+x <- getURL("https://raw.github.com/aronlindberg/latent_growth_classes/master/LGC_data.csv")
+y <- read.csv(text = x)
 
 
 #Reading in JSON-------------------------------------
