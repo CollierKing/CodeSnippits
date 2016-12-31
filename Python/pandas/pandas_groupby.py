@@ -655,6 +655,81 @@ result = df.groupby('a').apply(compute_metrics)
 result
 result.stack()
 
+## Other Examples ##
+##########################################
+
+# Grouping
+##########
+# Basic grouping with apply
+###########################
+# Unlike agg, apply’s callable is passed a sub-DataFrame which gives 
+# you access to all the columns
+df = pd.DataFrame({'animal': 'cat dog cat fish dog cat cat'.split(),
+                       'size': list('SSMMMLL'),
+                       'weight': [8, 10, 11, 1, 20, 12, 12],
+                       'adult' : [False] * 5 + [True] * 2})
+df
+
+#List the size of the animals with the highest weight.
+df.groupby('animal').apply(lambda subf: subf['size'][subf['weight'].idxmax()])
+
+# Using get_group
+#################
+gb = df.groupby(['animal'])
+gb.get_group('cat')
+
+# Apply to different items in a group
+#####################################
+def GrowUp(x):
+   avg_weight =  sum(x[x['size'] == 'S'].weight * 1.5)
+   avg_weight += sum(x[x['size'] == 'M'].weight * 1.25)
+   avg_weight += sum(x[x['size'] == 'L'].weight)
+   avg_weight /= len(x)
+   return pd.Series(['L',avg_weight,True], index=['size', 'weight', 'adult'])
+
+expected_df = gb.apply(GrowUp)
+expected_df    
+
+# Expanding Apply
+#################
+S = pd.Series([i / 100.0 for i in range(1,11)])
+S
+
+def CumRet(x,y):
+       return x * (1 + y)
+   
+def Red(x):
+       return functools.reduce(CumRet,x,1.0) # ! functools not defined
+    
+S.expanding().apply(Red)
+
+# Replacing some values with mean of the rest of a group
+df = pd.DataFrame({'A' : [1, 1, 2, 2], 'B' : [1, -1, 1, 2]})
+df
+
+gb = df.groupby('A')
+gb
+
+def replace(g):
+       mask = g < 0
+       g.loc[mask] = g[~mask].mean()
+       return g
+
+gb.transform(replace)
+
+# Sort groups by aggregated data
+df = pd.DataFrame({'code': ['foo', 'bar', 'baz'] * 2,
+                       'data': [0.16, -0.21, 0.33, 0.45, -0.59, 0.62],
+                       'flag': [False, True] * 3})
+df
+
+code_groups = df.groupby('code')
+agg_n_sort_order = code_groups[['data']].transform(sum).sort_values(by='data')
+agg_n_sort_order
+sorted_df = df.ix[agg_n_sort_order.index]
+sorted_df
+
+# Create multiple aggregated columns
 
 
 
@@ -662,5 +737,6 @@ result.stack()
 
 
 
+    
 
 
