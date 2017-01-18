@@ -165,4 +165,14 @@ df
 df.to_clipboard()
 pd.read_clipboard()
 
+# MYSQL
+############
+#####
+import pymysql
+import sqlalchemy
+from sqlalchemy import create_engine
+import pandas as pd
+engine = create_engine('mysql+pymysql://user:pass@host/schema', echo=False)
+f = pd.read_sql_query('SELECT * FROM trades', engine)
+f.head()
 
