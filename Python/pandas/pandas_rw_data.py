@@ -176,3 +176,8 @@ engine = create_engine('mysql+pymysql://user:pass@host/schema', echo=False)
 f = pd.read_sql_query('SELECT * FROM trades', engine)
 f.head()
 
+##GITHUB REPO
+url = 'https://raw.githubusercontent.com/pydata/pydata-book/master/ch09/stock_px.csv'
+df = pd.read_csv(url,index_col=0,parse_dates=[0])
+
+print df.head(5)
