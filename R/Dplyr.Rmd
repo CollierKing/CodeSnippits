@@ -1,0 +1,29 @@
+---
+title: "Dplyr Tricks and Examples"
+output: html_notebook
+---
+
+This notebook overviews some useful Dplyr tasks.
+Dplyr offers much of the same functionality as Pivot Tables in Excel, but WAYYY more flexible and powerful. Dplyr is similar to the Pandas library in Python.
+
+```{r setup}
+library(dplyr)
+```
+
+## Grouping over Intervals
+
+```{r group by intervals}
+
+#http://stackoverflow.com/questions/36158017/summarize-groups-into-intervals-using-dplyr
+
+d<-data.frame(v1=seq(0,9.9,0.1),
+              v2=rnorm(100),
+              v3=rnorm(100))          
+
+d%>% mutate(start=floor(v1),
+               end=ifelse(ceiling(v1)==start,start+1,ceiling(v1))) %>%
+        group_by(start,end) %>%
+        summarise(mean.v2=mean(v2),
+                  mean.v3=mean(v3))
+
+```
