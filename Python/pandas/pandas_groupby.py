@@ -733,6 +733,19 @@ sorted_df
 
 
 
+## FURTHER NOTES
+
+#Grouping over an interval
+
+test = df.groupby(pd.cut(df["interval_column"], 
+                   np.arange(0, 500, 50))).agg({'col1':'size',
+                                                'col2': [np.mean],
+                                                'col3': [np.mean],
+                                                'col4': forecast,
+                                                'col5': [np.mean],
+                                                'col6': [np.mean],
+                                                'col7': actual
+                                                })
 
 
 
