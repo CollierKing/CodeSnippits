@@ -7,3 +7,9 @@ os.chdir(path)
 import os
 os.chdir("C:/Users/Collier/Dropbox (Personal)/Skills/Python/Coursera/ML_Foundations/Week2-Regression")
 print(os.getcwd())
+
+#show rows/cols
+df.shape
+
+#show conda envs
+conda info -
