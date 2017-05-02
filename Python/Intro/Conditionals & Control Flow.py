@@ -20,6 +20,15 @@ if 0 < x:            # assume x is an int here
     if x < 10:
         print("x")
 
+# Case expression equivalent
+def numbers_to_strings(argument):
+    switcher = {
+        0: "zero",
+        1: "one",
+        2: "two",
+    }
+    return switcher.get(argument, "nothing")
+
 
 # FOR loops
 ##################################
