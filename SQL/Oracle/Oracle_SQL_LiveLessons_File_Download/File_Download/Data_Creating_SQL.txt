@@ -1,0 +1,98 @@
+set ECHO OFF
+set TERMOUT OFF
+column HOME_DIR new_value HDIR noprint
+	2:	column PROGRAM_DIR new_value PDIR noprint
+	3:	column PROGRAM_SUFFIX new_value PSUF noprint
+	4:	select HOME_DIR,PROGRAM_DIR,PROGRAM_SUFFIX
+	5:	   from APPLICATION_DEFAULTS
+	6:	/
+	7:	spool  LIST614.BAT
+	8:	select 'CD &PDIR'
+	9:	    from dual
+	10:	/
+	11:	select ‘DIR *.&PSUF’
+	12:	    from dual
+	13:	/
+	14:	select ‘CD &HDIR’
+	15:	    from dual
+	16:	/
+	17:	spool off
+	18:	exit
+
+
+SQLPLUS -S HOTKA/DAN @LIST6_16
+	2:	CALL LIST6_16.BAT
+	3:	SED -F LIST6_19.SED LIST6_15A.DAT > LIST6_15B.DAT
+	4:	SQLLOAD USERID=HOTKA/DAN CONTROL=LIST6_16.CTL
+
+
+Listing 6.16 SQL*Plus command file LIST6_16.SQL
+
+	1:	set PAGESIZE 0
+	2:	column HOME_DIR new_value HDIR noprint
+	3:	column PROGRAM_DIR new_value PDIR noprint
+	4:	column PROGRAM_SUFFIX new_value PSUF noprint
+	5:	select HOME_DIR,PROGRAM_DIR,PROGRAM_SUFFIX
+	6:	   from APPLICATION_DEFAULTS
+	7:	/
+	8:	spool  LIST6_16.BAT
+	9:	select ‘DIR &PDIR\*.&PSUF > &HDIR/LIST6_15A.DAT
+	10:	    from dual
+	11:	/
+	12:	spool off
+	13:	spool LIST6_16.ctl
+	14:	select 'load data'
+	15:	 	from dual
+	16:	/	
+	17:	select 'infile '|| '''' || ‘LIST6_15B.DAT || ''''
+	18:	    	from dual
+	19:	/
+	20:	select 'append'
+	21:	  	from dual
+	22:	/
+	23:	select 'into table APPLICATION_PROGRAMS’
+	24:	 	from dual
+	25:	/
+	26:	select '(PROGRAM_NAME position(1:8) char,'
+	27:	 	from dual
+	28:	/
+	29:	select ‘PROGRAM_SUFFIX constant  ' || '''' || '&PSUF’ || '''' || ','
+	30:		 from dual
+	31:	/
+	32:	select PROGRAM_SIZE position(15:22) integer external,'
+	33:	  	 from dual
+	34:	/
+	35:	select 'PROGRAM_PATH constant ‘ || '''' || '&PDIR’ || '''' || ','
+	36:	 	 from dual
+	37:	/
+	38:	select ‘ASSIGNED_ANALYST constant ‘ || '''' || '&USER’ || '''' || ')’
+	39:	 	 from dual
+	40:	/
+	41:	spool off
+	42:	exit
+
+Listing 6.17 SQL creating MS-DOS batch file Output
+
+
+	DIR C:\COBOL\*.COB > C:\FILES\LIST6_15A.DAT
+
+
+
+Listing 6.18 SQL creating Oracle SQL*Loader control file Output
+
+	load data                                                                       
+	infile ‘LIST6_15B.DAT’
+	append                                                                          
+	into table APPLICATION_PROGRAMS                                                  
+	 (PROGRAM_NAME position(1:8) char,                                                
+	PROGRAM_SUFFIX constant ‘COB’,                                       
+	PROGRAM_SIZE position(15:22) integer external,                            
+	PROGRAM_PATH constant 'C:\COBOL',                                                    
+	ASSIGNED_ANALYST constant ‘HOTKA’)                                                     
+
+Listing 6.19 LIST6_17.SED file used in Listing 6_15, line 3. 
+
+	1,4d
+	/bytes/,$d
+
+

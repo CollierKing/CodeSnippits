@@ -1,0 +1,17 @@
+create table name_tst (fl_name varchar(30));
+insert into name_tst values ('HOTKA, DAN');
+
+
+select initcap(fl_name) from name_tst;
+
+select substr(fl_name,(instr(fl_name,','))+2) 
+from name_tst;
+
+select substr(fl_name,1,(instr(fl_name,',')-1))
+from name_tst;
+
+select substr(fl_name,(instr(fl_name,','))+2) || ' ' || substr(fl_name,1,(instr(fl_name,',')-1))
+from name_tst;
+
+select initcap(substr(fl_name,(instr(fl_name,','))+2) || ' ' || substr(fl_name,1,(instr(fl_name,',')-1)))
+from name_tst;

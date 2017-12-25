@@ -1,0 +1,17 @@
+create or replace procedure mgr_name (v_name_in IN varchar2,
+                                       v_name_out OUT varchar2)
+is
+begin
+
+select ename
+into v_name_out
+from emp
+where product_name = v_name_in;
+
+exception
+  when others then
+  v_name_out := ' no data found ';
+  raise;
+
+end;
+/

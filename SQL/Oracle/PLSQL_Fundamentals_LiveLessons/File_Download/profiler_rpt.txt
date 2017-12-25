@@ -1,0 +1,24 @@
+
+                          PL/SQL Profiler Output    Date: 25-SEP-07                                 
+
+     RUNID RUN_OWNER       RUN_DATE  RUN_COMMENT                                                    
+---------- --------------- --------- -------------------------                                      
+         1 USER6           24-SEP-07 LOOPING_EXAMPLE_9/24/2007                                      
+                                      3:08:44 PM                                                    
+                                                                                                    
+         2 USER6           24-SEP-07 plus test                                                      
+
+     RUNID UNIT_NUMBER UNIT_TYPE       UNIT_OWNER      UNIT_NAME       UNIT_TIME                    
+---------- ----------- --------------- --------------- --------------- ---------                    
+         1           6 PROCEDURE       USER0           LOOPING_EXAMPLE 24-SEP-07                    
+
+UNIT_NAME            LINE#     PASSES TOTAL_TIME TEXT                                               
+--------------- ---------- ---------- ---------- ---------------------------------------------      
+LOOPING_EXAMPLE          3          1      .0006    loop_counter   NUMBER := 0;                     
+LOOPING_EXAMPLE          5         15    1.20591    FOR rec IN (SELECT *                            
+LOOPING_EXAMPLE          8         14     .01704       loop_counter := loop_counter + 1;            
+LOOPING_EXAMPLE          9         29     .06281       DBMS_OUTPUT.put_line (                       
+LOOPING_EXAMPLE         14          1     .00435    DBMS_OUTPUT.put_line ('Procedure Looping E      
+                                                 xample is done');                                  
+                                                                                                    
+LOOPING_EXAMPLE         15          1     .00289 END;                                               
