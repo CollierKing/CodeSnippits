@@ -65,3 +65,27 @@ dbms_output.put_line('New Salary for  ' || n_ename || ' is ' || v_sal);
 
 END;
 /
+
+--EXAMPLE 4 (Problems)
+DECLARE
+
+v_number NUMBER := 7369;
+v_sal    emp.sal%TYPE;
+v_ename  emp.ename%TYPE;
+
+BEGIN
+
+select ename, sal * 1.1
+into v_ename, v_sal
+from emp
+where empno = v_number;
+
+
+dbms_output.put_line('Employee ' || v_ename || ' New Sal ' || v_sal);
+
+END;
+/
+
+
+
+missing ';' on select, misspelled v_name, missing emp. on v_ename %type
