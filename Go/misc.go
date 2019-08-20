@@ -132,23 +132,145 @@ func main() {
 			zipCode: 94000,
 		},
 	}
-//pointers (1)
+//POINTERS (1)
 // "&" gives the memory address of 
 // the value the variable is pointing at
-	jimPointer := &jim
-	jimPointer.updateName("jimmy")
+	
+	jim.updateName("jimmy")
 	jim.print()
 }
 
 // star in front of type vs star intfront of receiver
-// a type of pointer that points at a person
+//looking for type of pointer to a person
+// When you call a method that requires a pointer receiver 
+// on a variable with a non-pointer type, Go will automatically 
+// convert the receiver to a pointer for you
 func (pointerToPerson *person) updateName(newFirstName string){
-// "*" gives the value this memory address is pointing at
+//turn this pointer into a person value
 	(*pointerToPerson).firstName = newFirstName
 }
 
 func (p person) print(){
 	fmt.Printf("%%+v", p)
+}
+
+
+
+//MAPS
+//maps:first way
+// with maps the values and keys must all be same type
+package main
+
+import "fmt"
+
+func main(){
+	// declare a map where
+	// all keys are type string
+	// all values are type string
+	colors := map[string]string{
+
+		"red":"#ff0000",
+		"green":"#4bf745",
+
+	}
+
+	fmt.Println(colors)
+}
+
+//maps:second way 
+package main
+
+import "fmt"
+
+func main(){
+	
+	var colors map[string]string
+	// OR
+	colors := make(map[string]string)
+
+	// adding another KV pay
+	colors["white"] = "#ffffff" //key has to be of appropriate type
+
+	//deleting a KV from a map
+	colors[10] = "#ffffff"
+	delete(colors,10)
+
+	fmt.Println(colors)
+}
+
+//iterating over a map
+package main
+
+import "fmt"
+
+func main(){
+	
+	colors:= map[string]string{
+	"red":"#ff0000",
+	"green":"#4bf745",
+	"white":"#ffffff",
+	}
+
+	// fmt.Println(colors)
+	printMap(colors)
+
+}
+
+// map of keys type string, values type string
+func printMap(c map[string]string){
+	for color, hex := range c{
+		fmt.Println("Hex code for",color,"is",hex)
+	}
+}
+
+//INTERFACES
+// let you define variables and function parameters 
+// that will hold any type, as long as that type defines 
+// certain methods.
+
+// In Go, an interface is defined as a set of methods that 
+// certain values are expected to have. You can think of an 
+// interface as a set of actions you need a type to be able to perform.
+
+// interfaces are not "generic" types
+// interfaces are "implicit"
+// we never put in any type of manual code to link together the types
+// (go takes care of it for us)
+
+package main
+
+import "fmt"
+
+type bot interface {
+	//list as many funcs inside of an interface
+	// to list what a type has to satisfy as type bot
+	getGreeting() string
+}
+type englishBot struct{}
+type spanishBot struct{}
+
+func main() {
+
+	eb := englishBot{}
+	sb := spanishBot{}
+
+	printGreeting(eb)
+	printGreeting(sb)
+
+}
+
+func printGreeting(b bot) {
+	fmt.Println(b.getGreeting())
+}
+
+func (englishBot) getGreeting() string {
+
+	return "Hi There!"
+}
+
+func (spanishBot) getGreeting() string {
+
+	return "Hola!"
 }
 
 
