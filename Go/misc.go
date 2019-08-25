@@ -273,5 +273,152 @@ func (spanishBot) getGreeting() string {
 	return "Hola!"
 }
 
+//example with io & http
+package main
 
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
 
+type logWriter struct {
+}
+
+func main() {
+
+	resp, err := http.Get("http://google.com")
+	if err != nil {
+		fmt.Println("Error:", err)
+		os.Exit(1)
+	}
+
+	lw := logWriter{}
+	io.Copy(lw, resp.Body)
+
+}
+
+//associates with writer interface
+func (logWriter) Write(bs []byte) (int, error) {
+
+	// return the body of the byte slice returned from the call
+	// fmt.Println(string(bs))
+	//return # of bytes written from bs
+	fmt.Println("Just wrote this many bytes:",
+		len(bs))
+	return len(bs), nil
+
+}
+
+//GOROUTINES:
+// a separate line of code execution that can be used to
+// handle blocking code
+
+//CHANNELS:
+// communicate between go routines
+
+// PARALLEL example (Go routines)
+// a go routine is something that exists inside of our process
+// takes every line of code in our program and executes everything line by line
+
+//CONCURRENCY IS NOT PARALLELISM!
+// Concurrency - we can have multiple threads
+// executing code.  If one thread blocks, another one
+// is picked up and worked on.
+
+// go scheduler runs in background
+// go used 1 cpu core by detault
+// only one go routine is run at any given time
+// scheduler runs one routine until it finishes or
+// makes a blocking call (line an http request)
+
+// CONCURRENCY:
+// A program is concurrent if it has the ability to load up
+// multiple go routines "at the same time" (if more than 1 core)
+
+// PARALLELISM:
+// we only get this when we start to use more than 1 cpu core
+// while one go routine on one core is being used,
+// another go routine on another core can also be used
+
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"time"
+)
+
+// main routine determines when our program starts & ends
+// doesnt care about child routines (started with goroutines) --> exits (entire program quites)
+
+//CHANNELS:
+// used to make main routine aware of child routines
+// only way for main routine to communicate with child routines
+// channels are types just like any other go variable
+// can only use messages of the channel's type
+
+// with channels there is always a "sender"
+// send 5 into a channel:
+// channel <- 5
+
+// wait for a value to be sent into the channel,
+// when we get one, assign to the value myNumber:
+// myNumber <- channel
+
+// wait for a value to be send into the channel
+// when we get one, log it out immediately:
+// fmt.Println(<- channel)
+
+func main() {
+
+	links := []string{
+
+		"http://google.com",
+		"http://facebook.com",
+		"http://stackoverflow.com",
+		"http://golang.org",
+		"http://amazon.com",
+	}
+
+	//initialize a channel
+	c := make(chan string)
+
+	for _, link := range links {
+		//"go" opens a new go routine
+		// continue to spawn new go routines until one exists for each link
+		go checkLink(link, c)
+
+	}
+
+	//receive a value out of the channel
+	// when we wait for a msg to come thru a chan, its a blocking call
+	// main routine is put to sleep
+	// only have 5 messages printed because we are only spinning up 5 goroutines
+	// main routine waits for the sixth+ goroutine but doesnt get anything
+	for l := range c {
+
+		//function literal
+		go func(link string) {
+			time.Sleep(5 * time.Second)
+			checkLink(link, c)
+		}(l)
+	}
+}
+
+//pass channel into the function
+// c is going to be a channel: can only communicate over it with type strings
+func checkLink(link string, c chan string) {
+	// fmt.Println(link, ".........")
+	_, err := http.Get(link)
+	if err != nil {
+		fmt.Println(link, " might be down!")
+		c <- link
+		return
+	}
+
+	fmt.Println(link, " is up!")
+	c <- link
+
+}
